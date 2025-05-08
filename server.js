@@ -13,7 +13,8 @@ const app = express();
 
 // Middleware
 app.use(cors({
-    origin: ['http://localhost:5173','https://salary-slip-offer-letter-generator-frontend.vercel.app/'], // Your frontend URL
+    origin: ['http://localhost:5173','https://salary-slip-offer-letter-generator-frontend.vercel.app/'],
+    methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
     credentials: true
 }));
 app.use(express.json());
