@@ -13,7 +13,7 @@ const app = express();
 
 // Middleware
 app.use(cors({
-    origin: 'http://localhost:5173', // Your frontend URL
+    origin: ['http://localhost:5173','https://salary-slip-offer-letter-generator-frontend.vercel.app/'], // Your frontend URL
     credentials: true
 }));
 app.use(express.json());
@@ -28,6 +28,9 @@ app.use('/api/auth', authRoutes);
 app.use('/api/employees', employeeRoutes);
 app.use('/api/offer-letter', offerLetterRoutes);
 app.use('/api/salary-slips', salarySlipRoutes);
+app.get("/", (req, res) => {
+    res.send("welcome to salary slip backend ");
+});
 
 // Error handling middleware
 app.use((err, req, res, next) => {
