@@ -24,10 +24,31 @@ app.options('*', cors());
 
 app.use(express.json());
 
-// Connect to MongoDB
-mongoose.connect(process.env.MONGODB_URI)
-    .then(() => console.log('Connected to MongoDB'))
-    .catch((err) => console.error('MongoDB connection error:', err));
+// Connect to MongoDB with improved options
+mongoose.connect(process.env.MONGODB_URI, {
+    serverSelectionTimeoutMS: 30000, // Timeout after 30 seconds
+    socketTimeoutMS: 45000, // Close sockets after 45 seconds of inactivity
+    connectTimeoutMS: 30000, // Connection attempt timeout
+    heartbeatFrequencyMS: 10000, // 10 seconds between heartbeats
+    retryWrites: true,
+    w: 'majority'
+})
+.then(() => console.log('Connected to MongoDB successfully'))
+.catch((err) => {
+    console.error('MongoDB connection error:', err);
+    // Don't exit the process, let the server run anyway
+    console.log('Server will continue running, but database operations may fail');
+});
+
+// Add connection error handler
+mongoose.connection.on('error', (err) => {
+    console.error('MongoDB connection error after initial connection:', err);
+});
+
+// Add connection success handler after reconnect
+mongoose.connection.on('reconnected', () => {
+    console.log('MongoDB reconnection successful');
+});
 
 // Routes
 app.use('/api/auth', authRoutes);
